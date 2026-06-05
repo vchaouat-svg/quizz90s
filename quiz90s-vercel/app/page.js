@@ -114,15 +114,6 @@ export default function Quiz90s() {
   };
 
   const shareWhatsApp = () => {
-    const text = result ? `Je suis ${result.personnage_principal} ! Découvre ton profil 90s ici : https://quizz90s.vercel.app` : "Découvre ton profil 90s ici : https://quizz90s.vercel.app";
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-  };
-
-  const shareLinkedIn = () => {
-    window.open("https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fquizz90s.vercel.app", "_blank");
-  };
-
-  const shareWhatsApp = () => {
     const text = result ? `Je suis ${result.personnage_principal} ! Découvre ton profil 90s : https://quizz90s.vercel.app` : "Découvre ton profil 90s : https://quizz90s.vercel.app";
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
@@ -151,25 +142,6 @@ export default function Quiz90s() {
 
   const progress = step === "quiz" ? (currentQ / QUESTIONS.length) * 100 : 0;
 
-  const extractTags = (r) => {
-    if (!r) return [];
-    const tags = [];
-    const name = r.personnage_principal || "";
-    if (name.includes("Sex and the City")) tags.push({ label: "Sex and the City", type: "pink" });
-    if (name.includes("Friends")) tags.push({ label: "Friends", type: "orange" });
-    if (name.includes("X-Files")) tags.push({ label: "X-Files", type: "pink" });
-    if (name.includes("Titanic")) tags.push({ label: "Titanic", type: "orange" });
-    if (name.includes("Fight Club")) tags.push({ label: "Fight Club", type: "pink" });
-    if (name.includes("Matrix")) tags.push({ label: "Matrix", type: "orange" });
-    if (name.includes("Pulp Fiction")) tags.push({ label: "Pulp Fiction", type: "pink" });
-    if (name.includes("Buffy")) tags.push({ label: "Buffy", type: "orange" });
-    if (name.includes("Clueless")) tags.push({ label: "Clueless", type: "pink" });
-    if (name.includes("Charmed")) tags.push({ label: "Charmed", type: "orange" });
-    if (name.includes("Daria")) tags.push({ label: "Daria", type: "pink" });
-    if (tags.length === 0) tags.push({ label: "Quiz 90s", type: "pink" });
-    tags.push({ label: "quizz90s.vercel.app", type: "white" });
-    return tags;
-  };
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text, position: "relative" }}>
