@@ -118,6 +118,37 @@ export default function Quiz90s() {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
+  const shareLinkedIn = () => {
+    window.open("https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fquizz90s.vercel.app", "_blank");
+  };
+
+  const shareWhatsApp = () => {
+    const text = result ? `Je suis ${result.personnage_principal} ! Découvre ton profil 90s : https://quizz90s.vercel.app` : "Découvre ton profil 90s : https://quizz90s.vercel.app";
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const extractTags = (r) => {
+    if (!r) return [];
+    const tags = [];
+    const name = r.personnage_principal || "";
+    if (name.includes("SATC") || name.includes("Sex and the City")) tags.push({ label: "Sex and the City", type: "pink" });
+    if (name.includes("Friends")) tags.push({ label: "Friends", type: "orange" });
+    if (name.includes("X-Files")) tags.push({ label: "X-Files", type: "pink" });
+    if (name.includes("Titanic")) tags.push({ label: "Titanic", type: "orange" });
+    if (name.includes("Fight Club")) tags.push({ label: "Fight Club", type: "pink" });
+    if (name.includes("Matrix")) tags.push({ label: "Matrix", type: "orange" });
+    if (name.includes("Pulp Fiction")) tags.push({ label: "Pulp Fiction", type: "pink" });
+    if (name.includes("Buffy")) tags.push({ label: "Buffy", type: "orange" });
+    if (name.includes("Clueless")) tags.push({ label: "Clueless", type: "pink" });
+    if (name.includes("Charmed")) tags.push({ label: "Charmed", type: "orange" });
+    if (name.includes("Daria")) tags.push({ label: "Daria", type: "pink" });
+    if (name.includes("Prince de Bel-Air")) tags.push({ label: "Le Prince de Bel-Air", type: "orange" });
+    if (name.includes("Legally Blonde")) tags.push({ label: "Legally Blonde", type: "pink" });
+    if (tags.length === 0) tags.push({ label: "Quiz 90s", type: "pink" });
+    tags.push({ label: "quizz90s.vercel.app", type: "white" });
+    return tags;
+  };
+
   const progress = step === "quiz" ? (currentQ / QUESTIONS.length) * 100 : 0;
 
   const extractTags = (r) => {
@@ -275,130 +306,95 @@ export default function Quiz90s() {
         {step === "result" && result && (
           <div style={{ animation: "fadeIn 0.5s ease" }}>
 
-            {/* CARTE */}
             <div ref={cardRef} style={{
-              fontFamily: "'DM Sans', sans-serif",
-              background: "#0D0D0D",
-              borderRadius: "16px",
-              padding: "36px 40px 40px",
-              marginBottom: "16px",
-              position: "relative",
-              overflow: "hidden",
+              background: "linear-gradient(135deg, #0a0a1e, #12123a, #0a1628)",
+              border: "1px solid rgba(255,107,157,0.2)",
+              borderRadius: "16px", padding: "36px 40px 40px",
+              marginBottom: "16px", position: "relative", overflow: "hidden",
             }}>
-              {/* Glow déco */}
-              <div style={{ position: "absolute", top: "-80px", right: "-80px", width: "300px", height: "300px", background: "radial-gradient(circle, #FF6B9D22 0%, transparent 70%)", pointerEvents: "none" }} />
-              <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "250px", height: "250px", background: "radial-gradient(circle, #FFA45B18 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div style={{ position: "absolute", top: "-80px", right: "-80px", width: "280px", height: "280px", background: "radial-gradient(circle, rgba(255,107,157,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "220px", height: "220px", background: "radial-gradient(circle, rgba(43,134,197,0.15) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-              {/* Label haut */}
-              <div style={{ fontSize: "11px", fontWeight: "500", letterSpacing: "0.18em", color: C.a1, textTransform: "uppercase", marginBottom: "18px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ display: "block", height: "1px", width: "20px", background: "#FF6B9D55" }} />
+              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "10px", fontWeight: "500", letterSpacing: "0.2em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ display: "block", height: "1px", width: "22px", background: "rgba(255,107,157,0.4)" }} />
                 Which 90s character are you?
-                <span style={{ display: "block", height: "1px", width: "20px", background: "#FF6B9D55" }} />
+                <span style={{ display: "block", height: "1px", width: "22px", background: "rgba(255,107,157,0.4)" }} />
               </div>
 
-              {/* Nom */}
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px,5vw,38px)", fontWeight: "700", lineHeight: 1.1, color: "#fff", marginBottom: "6px" }}>
+              <div style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: "clamp(24px,5vw,34px)", fontWeight: "700", lineHeight: 1.1, color: "#fff", marginBottom: "8px", letterSpacing: "-0.5px" }}>
                 {result.personnage_principal.includes(" x ") ? (
                   <>
                     {result.personnage_principal.split(" x ")[0]}
-                    <span style={{ color: C.a1, fontStyle: "italic" }}> × </span>
+                    <span style={{ color: "#FF6B9D", fontStyle: "italic" }}> × </span>
                     {result.personnage_principal.split(" x ")[1]}
                   </>
                 ) : result.personnage_principal}
               </div>
 
-              {/* Punchline */}
-              <div style={{ fontSize: "14px", fontWeight: "400", color: C.a2, letterSpacing: "0.04em", marginBottom: "24px" }}>
+              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "13px", color: "#FFA45B", letterSpacing: "0.05em", marginBottom: "24px" }}>
                 {result.punchline}
               </div>
 
-              {/* Divider */}
-              <div style={{ height: "1px", background: "linear-gradient(90deg, #FF6B9D44, #FFA45B44, transparent)", marginBottom: "22px" }} />
+              <div style={{ height: "1px", background: "linear-gradient(90deg, rgba(255,107,157,0.35), rgba(255,164,91,0.35), transparent)", marginBottom: "22px" }} />
 
-              {/* Descriptif */}
-              <div style={{ fontSize: "15px", fontWeight: "300", color: "#C0C0C0", lineHeight: 1.8, marginBottom: "24px" }}>
+              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "14px", fontWeight: "300", color: "#C0C0C0", lineHeight: 1.85, marginBottom: "26px" }}>
                 {result.descriptif}
               </div>
 
-              {/* Super pouvoir */}
-              <div style={{ background: "#1A1A1A", border: "1px solid #2A2A2A", borderLeft: `3px solid ${C.a1}`, borderRadius: "8px", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "20px" }}>
-                <span style={{ fontSize: "20px", flexShrink: 0, marginTop: "1px" }}>⚡</span>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderLeft: "3px solid #FF6B9D", borderRadius: "0 8px 8px 0", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "22px" }}>
+                <span style={{ fontSize: "18px", flexShrink: 0, marginTop: "2px" }}>⚡</span>
                 <div>
-                  <div style={{ fontSize: "10px", fontWeight: "500", letterSpacing: "0.15em", color: C.a1, textTransform: "uppercase", marginBottom: "5px" }}>Super pouvoir</div>
-                  <div style={{ fontSize: "14px", fontWeight: "400", color: "#E0E0E0", lineHeight: 1.5 }}>{result.superpower}</div>
+                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: "10px", fontWeight: "600", letterSpacing: "0.18em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "5px" }}>Super pouvoir</div>
+                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: "13px", color: "#E0E0E0", lineHeight: 1.55 }}>{result.superpower}</div>
                 </div>
               </div>
 
-              {/* Tags */}
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 {extractTags(result).map((tag, i) => (
                   <span key={i} style={{
-                    fontSize: "11px", fontWeight: "500", letterSpacing: "0.06em",
-                    padding: "5px 12px", borderRadius: "20px", border: "1px solid",
-                    color: tag.type === "pink" ? C.a1 : tag.type === "orange" ? C.a2 : "#666",
-                    borderColor: tag.type === "pink" ? "#FF6B9D44" : tag.type === "orange" ? "#FFA45B44" : "#33333388",
-                    background: tag.type === "pink" ? "#FF6B9D11" : tag.type === "orange" ? "#FFA45B11" : "transparent",
+                    fontFamily: "'Courier New', monospace", fontSize: "11px",
+                    padding: "5px 13px", borderRadius: "20px", border: "1px solid",
+                    color: tag.type === "pink" ? "#FF6B9D" : tag.type === "orange" ? "#FFA45B" : "#555",
+                    borderColor: tag.type === "pink" ? "rgba(255,107,157,0.35)" : tag.type === "orange" ? "rgba(255,164,91,0.35)" : "rgba(255,255,255,0.1)",
+                    background: tag.type === "pink" ? "rgba(255,107,157,0.08)" : tag.type === "orange" ? "rgba(255,164,91,0.08)" : "transparent",
                   }}>{tag.label}</span>
                 ))}
               </div>
             </div>
 
-            {/* CTA */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              {/* Copier image */}
               <button onClick={copyImage} style={{
-                width: "100%", padding: "15px", fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px", fontWeight: "500", letterSpacing: "2px", textTransform: "uppercase",
+                width: "100%", padding: "15px", fontFamily: "'Courier New', monospace",
+                fontSize: "13px", fontWeight: "600", letterSpacing: "2px", textTransform: "uppercase",
                 cursor: copyState === "copying" ? "wait" : "pointer", border: "none",
                 borderRadius: "10px", color: "white", transition: "background 0.3s",
-                background: copyState === "done" ? "linear-gradient(135deg,#22c55e,#16a34a)" : `linear-gradient(135deg,${C.a1},${C.a2})`
+                background: copyState === "done" ? "linear-gradient(135deg,#22c55e,#16a34a)" : "linear-gradient(135deg, #FF6B9D, #FFA45B)"
               }}>
                 {copyState === "idle" && "Copier l'image →"}
                 {copyState === "copying" && "Génération..."}
                 {copyState === "done" && "✓ Image copiée !"}
               </button>
 
-              {/* Partager sur les meilleurs réseaux de France */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                {/* LinkedIn */}
-                <button onClick={shareLinkedIn} style={{
-                  padding: "13px 16px", fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "13px", fontWeight: "500", cursor: "pointer",
-                  background: "#111", border: "1px solid #222", borderRadius: "10px",
-                  color: C.text, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-                  transition: "all 0.15s"
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#0A66C2"; e.currentTarget.style.background = "#0A1929"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#222"; e.currentTarget.style.background = "#111"; }}
+                <button onClick={shareLinkedIn} style={{ padding: "13px", fontFamily: "'Courier New', monospace", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#0A66C2"; e.currentTarget.style.background = "rgba(10,102,194,0.12)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                   LinkedIn
                 </button>
-
-                {/* WhatsApp */}
-                <button onClick={shareWhatsApp} style={{
-                  padding: "13px 16px", fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "13px", fontWeight: "500", cursor: "pointer",
-                  background: "#111", border: "1px solid #222", borderRadius: "10px",
-                  color: C.text, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px",
-                  transition: "all 0.15s"
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#25D366"; e.currentTarget.style.background = "#0a1a0f"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#222"; e.currentTarget.style.background = "#111"; }}
+                <button onClick={shareWhatsApp} style={{ padding: "13px", fontFamily: "'Courier New', monospace", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#25D366"; e.currentTarget.style.background = "rgba(37,211,102,0.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   WhatsApp
                 </button>
               </div>
 
-              <button onClick={restart} style={{
-                width: "100%", padding: "13px", fontFamily: "'DM Sans', sans-serif",
-                fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
-                cursor: "pointer", background: "transparent", border: "1px solid #222",
-                borderRadius: "10px", color: C.muted, transition: "all 0.15s"
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#555"; e.currentTarget.style.color = C.text; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#222"; e.currentTarget.style.color = C.muted; }}
+              <button onClick={restart} style={{ width: "100%", padding: "12px", fontFamily: "'Courier New', monospace", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", background: "transparent", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#444", transition: "all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#aaa"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "#444"; }}
               >
                 Recommencer
               </button>
