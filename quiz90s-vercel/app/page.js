@@ -37,8 +37,9 @@ export default function Quiz90s() {
   const [showCustom, setShowCustom] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState("idle"); // idle | copying | done
   const inputRef = useRef(null);
+  const cardRef = useRef(null);
 
   const handleAnswer = (answer) => {
     const newAnswers = [...answers, { q: currentQ + 1, answer }];
@@ -74,26 +75,47 @@ export default function Quiz90s() {
   const restart = () => {
     setStep("intro"); setGenre(""); setCurrentQ(0); setAnswers([]);
     setResult(null); setError(null); setShowCustom(false); setCustomInput("");
+    setCopyState("idle");
   };
 
-  const copyResult = () => {
-    if (!result) return;
-    const text = `Mon profil 90s : ${result.personnage_principal}\n\n"${result.titre}"\n\n${result.profil}\n\n"${result.citation}"\n\n⚡ ${result.superpower}\n🕳️ ${result.zone_aveugle}\n\n#Quiz90s`;
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    });
+  const copyImage = async () => {
+    if (!cardRef.current || copyState !== "idle") return;
+    setCopyState("copying");
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: "#0a0a0f",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      canvas.toBlob(async (blob) => {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob })
+          ]);
+          setCopyState("done");
+          setTimeout(() => setCopyState("idle"), 3000);
+        } catch {
+          // Fallback: télécharger l'image
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "mon-profil-90s.png";
+          a.click();
+          setCopyState("done");
+          setTimeout(() => setCopyState("idle"), 3000);
+        }
+      }, "image/png");
+    } catch (e) {
+      setCopyState("idle");
+    }
   };
 
   const progress = step === "quiz" ? (currentQ / QUESTIONS.length) * 100 : 0;
 
-  const s = {
-    wrap: { minHeight: "100vh", background: C.bg, fontFamily: "'Courier New', monospace", color: C.text, position: "relative", overflow: "hidden" },
-    inner: { position: "relative", zIndex: 1, maxWidth: "620px", margin: "0 auto", padding: "24px 16px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" },
-  };
-
   return (
-    <div style={s.wrap}>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "'Courier New', monospace", color: C.text, position: "relative", overflow: "hidden" }}>
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -102,12 +124,11 @@ export default function Quiz90s() {
         button:active { transform: scale(0.98) !important; }
       `}</style>
 
-      {/* Déco */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 100, backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px)" }} />
       <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "500px", height: "500px", borderRadius: "50%", background: `radial-gradient(circle,${C.a1}12,transparent 70%)`, pointerEvents: "none" }} />
       <div style={{ position: "fixed", bottom: "-20%", left: "-10%", width: "400px", height: "400px", borderRadius: "50%", background: `radial-gradient(circle,${C.a3}12,transparent 70%)`, pointerEvents: "none" }} />
 
-      <div style={s.inner}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "620px", margin: "0 auto", padding: "24px 16px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
 
         {/* INTRO */}
         {step === "intro" && (
@@ -229,31 +250,65 @@ export default function Quiz90s() {
         {/* RESULT */}
         {step === "result" && result && (
           <div style={{ animation: "fadeIn 0.5s ease" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "3px", color: C.a1, textTransform: "uppercase", marginBottom: "18px", textAlign: "center" }}>◈ Ton profil 90s ◈</div>
-            <div style={{ background: "linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)", border: `1px solid ${C.a1}44`, borderRadius: "16px", padding: "26px", marginBottom: "14px", boxShadow: `0 0 40px ${C.a1}22`, position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", top: 0, right: 0, width: "120px", height: "120px", background: `radial-gradient(circle at top right,${C.a1}33,transparent)`, pointerEvents: "none" }} />
-              <h2 style={{ fontSize: "clamp(20px,5vw,28px)", fontWeight: "900", margin: "0 0 6px", lineHeight: 1.2, background: `linear-gradient(135deg,${C.a1},${C.a4})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+
+            {/* CARTE — capturée pour l'image */}
+            <div ref={cardRef} style={{
+              background: "linear-gradient(135deg,#0a0a0f,#1a1a2e,#0f3460)",
+              borderRadius: "20px", padding: "32px 28px",
+              marginBottom: "16px", position: "relative", overflow: "hidden",
+            }}>
+              {/* Déco */}
+              <div style={{ position: "absolute", top: 0, right: 0, width: "200px", height: "200px", background: `radial-gradient(circle at top right,${C.a1}25,transparent)`, pointerEvents: "none" }} />
+              <div style={{ position: "absolute", bottom: 0, left: 0, width: "150px", height: "150px", background: `radial-gradient(circle at bottom left,${C.a3}20,transparent)`, pointerEvents: "none" }} />
+
+              {/* Badge */}
+              <div style={{ fontSize: "10px", letterSpacing: "3px", color: C.a1, textTransform: "uppercase", marginBottom: "20px", opacity: 0.8 }}>◈ WHICH 90s CHARACTER ARE YOU? ◈</div>
+
+              {/* Nom */}
+              <h2 style={{ fontSize: "clamp(24px,6vw,36px)", fontWeight: "900", margin: "0 0 10px", lineHeight: 1.1, background: `linear-gradient(135deg,${C.a1},${C.a4})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 {result.personnage_principal}
               </h2>
-              <p style={{ fontSize: "14px", color: C.a4, fontStyle: "italic", margin: "0 0 18px", fontWeight: "600" }}>{result.titre}</p>
-              <p style={{ fontSize: "14px", lineHeight: 1.8, color: "#ddd", margin: "0 0 18px" }}>{result.profil}</p>
-              <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: "10px", padding: "14px", borderLeft: `3px solid ${C.a1}` }}>
-                <p style={{ fontSize: "14px", fontStyle: "italic", color: C.a4, margin: 0, lineHeight: 1.6 }}>"{result.citation}"</p>
+
+              {/* Titre */}
+              <p style={{ fontSize: "15px", color: "#ddd", margin: "0 0 24px", lineHeight: 1.5, fontStyle: "italic" }}>
+                {result.titre}
+              </p>
+
+              {/* Citation */}
+              <div style={{ borderLeft: `3px solid ${C.a1}`, paddingLeft: "16px", marginBottom: "24px" }}>
+                <p style={{ fontSize: "14px", fontStyle: "italic", color: C.a4, margin: 0, lineHeight: 1.6 }}>
+                  "{result.citation}"
+                </p>
+              </div>
+
+              {/* Stats */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div style={{ background: "rgba(43,134,197,0.12)", border: "1px solid rgba(43,134,197,0.25)", borderRadius: "10px", padding: "14px" }}>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", color: C.a3, textTransform: "uppercase", marginBottom: "6px" }}>⚡ super pouvoir</div>
+                  <p style={{ fontSize: "13px", margin: 0, lineHeight: 1.4, color: "#ddd" }}>{result.superpower}</p>
+                </div>
+                <div style={{ background: "rgba(255,60,172,0.1)", border: "1px solid rgba(255,60,172,0.2)", borderRadius: "10px", padding: "14px" }}>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", color: C.a1, textTransform: "uppercase", marginBottom: "6px" }}>🐛 ton bug</div>
+                  <p style={{ fontSize: "13px", margin: 0, lineHeight: 1.4, color: "#ddd" }}>{result.zone_aveugle}</p>
+                </div>
+              </div>
+
+              {/* Watermark */}
+              <div style={{ marginTop: "20px", fontSize: "10px", color: "#444", letterSpacing: "2px", textAlign: "right" }}>
+                quizz90s.vercel.app
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
-              {[{ label: "⚡ Super pouvoir", val: result.superpower, col: C.a3 }, { label: "🕳️ Zone aveugle", val: result.zone_aveugle, col: C.a1 }].map(({ label, val, col }) => (
-                <div key={label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: "12px", padding: "14px" }}>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", color: col, textTransform: "uppercase", marginBottom: "6px" }}>{label}</div>
-                  <p style={{ fontSize: "13px", margin: 0, lineHeight: 1.5, color: "#ddd" }}>{val}</p>
-                </div>
-              ))}
-            </div>
+
+            {/* Actions */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <button onClick={copyResult} style={{ width: "100%", padding: "16px", fontSize: "14px", fontWeight: "700", fontFamily: "'Courier New', monospace", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", border: "none", borderRadius: "10px", background: copied ? "linear-gradient(135deg,#22c55e,#16a34a)" : `linear-gradient(135deg,${C.a1},${C.a2})`, color: "white", transition: "background 0.3s" }}>
-                {copied ? "✓ Copié !" : "Copier pour LinkedIn →"}
+              <button onClick={copyImage}
+                style={{ width: "100%", padding: "16px", fontSize: "14px", fontWeight: "700", fontFamily: "'Courier New', monospace", letterSpacing: "2px", textTransform: "uppercase", cursor: copyState === "copying" ? "wait" : "pointer", border: "none", borderRadius: "10px", color: "white", transition: "background 0.3s", background: copyState === "done" ? "linear-gradient(135deg,#22c55e,#16a34a)" : `linear-gradient(135deg,${C.a1},${C.a2})` }}>
+                {copyState === "idle" && "Copier l'image pour LinkedIn →"}
+                {copyState === "copying" && "Génération de l'image..."}
+                {copyState === "done" && "✓ Image copiée !"}
               </button>
-              <button onClick={restart} style={{ width: "100%", padding: "14px", fontSize: "13px", fontFamily: "'Courier New', monospace", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", background: "transparent", border: `1px solid ${C.border}`, borderRadius: "10px", color: C.muted, transition: "all 0.15s" }}
+              <button onClick={restart}
+                style={{ width: "100%", padding: "14px", fontSize: "13px", fontFamily: "'Courier New', monospace", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", background: "transparent", border: `1px solid ${C.border}`, borderRadius: "10px", color: C.muted, transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "#999"; e.currentTarget.style.color = C.text; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.muted; }}
               >
