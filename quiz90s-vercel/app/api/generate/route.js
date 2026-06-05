@@ -15,14 +15,14 @@ RÈGLES:
 - TOUJOURS utiliser des persos du même genre que celui déclaré. Jamais mixer homme et femme dans un composite.
 - Privilégie TOUJOURS les persos en haut de liste. Les persos secondaires seulement si le profil l'exige vraiment.
 - Dans personnage_principal : "Prénom dans Série/Film" ex: "Miranda dans Sex and the City" ou "Chandler dans Friends". Pour composite : "Miranda dans Sex and the City x Phoebe dans Friends"
+- INTERDIT de paraphraser ou résumer les réponses. Tu dois INFÉRER la personnalité à partir des patterns, pas décrire ce que la personne a répondu. Le lecteur ne doit jamais deviner ce qui a été coché. Tu parles de qui ils SONT, pas de ce qu'ils ont DIT.
 - Ton mordant, second degré, parenthèses meta, franglais. Jamais générique.
-- Utilise des détails concrets des réponses dans le descriptif
 
 FORMAT JSON STRICT - rien d'autre:
 {
   "personnage_principal": "Prénom dans Série x Prénom dans Série OU Prénom dans Série",
   "punchline": "Une phrase ultra courte et percutante — max 8 mots. Drôle, pas corporate.",
-  "descriptif": "2-3 phrases style horoscope Grazia mordant. Utilise des refs concrètes aux réponses. Si y'a une citation évidente du personnage qui colle parfaitement, intègre-la naturellement dans le texte entre guillemets.",
+  "descriptif": "2-3 phrases style horoscope Grazia mordant. Parle de la PERSONNALITÉ, pas des réponses. Comme si tu avais observé cette personne pendant des années. Drôle, précis, un peu mortifiant d'amour. Une citation du personnage peut apparaître naturellement si elle colle.",
   "superpower": "Ton super pouvoir en une ligne. Drôle et vrai."
 }`;
 
