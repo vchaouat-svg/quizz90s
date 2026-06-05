@@ -24,8 +24,8 @@ const GENRE_OPTIONS = [
 ];
 
 const C = {
-  bg: "#0a0a0a", card: "#111111", a1: "#FF6B9D", a2: "#FFA45B",
-  a3: "#784ba0", text: "#f0f0f0", muted: "#666", border: "#222"
+  bg: "#0a0a0f", card: "#12121a", a1: "#ff3cac", a2: "#784ba0",
+  a3: "#2b86c5", a4: "#ffcc00", text: "#f0f0f0", muted: "#777", border: "#2a2a3a"
 };
 
 export default function Quiz90s() {
@@ -84,10 +84,8 @@ export default function Quiz90s() {
     try {
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: "#0D0D0D",
-        scale: 2,
-        useCORS: true,
-        logging: false,
+        backgroundColor: "#0a0a1e",
+        scale: 2, useCORS: true, logging: false,
       });
       canvas.toBlob(async (blob) => {
         try {
@@ -97,16 +95,12 @@ export default function Quiz90s() {
         } catch {
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
-          a.href = url;
-          a.download = "mon-profil-90s.png";
-          a.click();
+          a.href = url; a.download = "mon-profil-90s.png"; a.click();
           setCopyState("done");
           setTimeout(() => setCopyState("idle"), 3000);
         }
       }, "image/png");
-    } catch (e) {
-      setCopyState("idle");
-    }
+    } catch { setCopyState("idle"); }
   };
 
   const shareLinkedIn = () => {
@@ -142,45 +136,41 @@ export default function Quiz90s() {
 
   const progress = step === "quiz" ? (currentQ / QUESTIONS.length) * 100 : 0;
 
-
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, color: C.text, position: "relative" }}>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "'Courier New', monospace", color: C.text, position: "relative", overflow: "hidden" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
         * { box-sizing: border-box; }
         button:active { transform: scale(0.98) !important; }
-        .opt-btn:hover { border-color: #FF6B9D !important; background: #1a1010 !important; }
-        .genre-btn:hover { border-color: #FF6B9D !important; padding-left: 26px !important; }
-        .custom-btn:hover { border-color: #FFA45B !important; color: #f0f0f0 !important; }
       `}</style>
 
-      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "24px 16px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 100, backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px)" }} />
+      <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "500px", height: "500px", borderRadius: "50%", background: `radial-gradient(circle,${C.a1}12,transparent 70%)`, pointerEvents: "none" }} />
+      <div style={{ position: "fixed", bottom: "-20%", left: "-10%", width: "400px", height: "400px", borderRadius: "50%", background: `radial-gradient(circle,${C.a3}12,transparent 70%)`, pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "620px", margin: "0 auto", padding: "24px 16px", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
 
         {/* INTRO */}
         {step === "intro" && (
           <div style={{ animation: "fadeIn 0.5s ease" }}>
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "4px", color: C.a1, textTransform: "uppercase", marginBottom: "16px", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-                <span style={{ display: "block", height: "1px", width: "28px", background: "#FF6B9D66" }} />
-                QUIZ PERSONNALITÉ
-                <span style={{ display: "block", height: "1px", width: "28px", background: "#FF6B9D66" }} />
-              </div>
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(36px,9vw,58px)", fontWeight: "700", lineHeight: 1.05, margin: "0 0 10px", color: "#fff" }}>
-                Which 90s<br /><em style={{ color: C.a1 }}>Character</em><br />Are You?
+            <div style={{ textAlign: "center", marginBottom: "36px" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "4px", color: C.a1, textTransform: "uppercase", marginBottom: "14px" }}>◈ QUIZ PERSONNALITÉ ◈</div>
+              <h1 style={{ fontSize: "clamp(32px,8vw,50px)", fontWeight: "900", lineHeight: 1.1, margin: "0 0 8px", background: `linear-gradient(135deg,${C.a1},${C.a4},${C.a3})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                WHICH 90s<br />CHARACTER<br />ARE YOU?
               </h1>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: C.muted, letterSpacing: "1px" }}>powered by IA — not a Cosmo test</div>
+              <div style={{ fontSize: "12px", color: C.muted, letterSpacing: "2px" }}>powered by IA — not a Cosmo test</div>
             </div>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#111", border: "1px solid #222", borderLeft: `3px solid ${C.a1}`, borderRadius: "10px", padding: "22px 24px", marginBottom: "28px" }}>
-              <p style={{ fontSize: "15px", lineHeight: 1.75, color: "#bbb", margin: 0, fontWeight: 300 }}>
-                Les quiz magazines t'ont menti. T'as toujours fini Carrie. <span style={{ color: C.a2, fontWeight: 500 }}>(tout le monde finit Carrie.)</span>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: "12px", padding: "22px", marginBottom: "28px" }}>
+              <p style={{ fontSize: "15px", lineHeight: 1.7, color: "#ccc", margin: 0 }}>
+                Les quiz magazines t'ont menti. T'as toujours fini Carrie. <span style={{ color: C.a4 }}>(tout le monde finit Carrie.)</span>
                 <br /><br />
-                Avec l'IA, pour la première fois, le résultat te ressemble <em style={{ color: "#fff", fontStyle: "normal", fontWeight: 500 }}>vraiment</em>. 12 questions. Un profil unique. Zéro case préfabriquée.
+                Avec l'IA, pour la première fois, le résultat te ressemble <em style={{ color: "#fff", fontStyle: "normal" }}>vraiment</em>. 12 questions. Un profil unique. Zéro case préfabriquée.
               </p>
             </div>
-            <button onClick={() => setStep("genre")} style={{ width: "100%", padding: "17px", fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: "500", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", border: "none", borderRadius: "10px", background: `linear-gradient(135deg, ${C.a1}, ${C.a2})`, color: "white" }}>
+            <button onClick={() => setStep("genre")} style={{ width: "100%", padding: "16px", fontSize: "14px", fontWeight: "700", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", border: "none", borderRadius: "10px", background: `linear-gradient(135deg,${C.a1},${C.a2})`, color: "white" }}>
               GO →
             </button>
           </div>
@@ -190,13 +180,15 @@ export default function Quiz90s() {
         {step === "genre" && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
             <div style={{ marginBottom: "28px" }}>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", letterSpacing: "3px", color: C.a1, textTransform: "uppercase", marginBottom: "10px" }}>Avant de commencer</div>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: "700", margin: 0 }}>Tu t'identifies comme :</h2>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: C.a1, textTransform: "uppercase", marginBottom: "10px" }}>Avant de commencer</div>
+              <h2 style={{ fontSize: "22px", fontWeight: "700", margin: 0 }}>Tu t'identifies comme :</h2>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {GENRE_OPTIONS.map(opt => (
-                <button key={opt.value} onClick={() => { setGenre(opt.label); setStep("quiz"); }} className="genre-btn"
-                  style={{ fontFamily: "'DM Sans', sans-serif", padding: "16px 20px", textAlign: "left", fontSize: "15px", cursor: "pointer", background: "#111", border: "1px solid #222", borderRadius: "10px", color: C.text, transition: "all 0.15s" }}
+                <button key={opt.value} onClick={() => { setGenre(opt.label); setStep("quiz"); }}
+                  style={{ padding: "16px 20px", textAlign: "left", fontSize: "15px", cursor: "pointer", background: C.card, border: `1px solid ${C.border}`, borderRadius: "10px", color: C.text, transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.a1; e.currentTarget.style.paddingLeft = "26px"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.paddingLeft = "20px"; }}
                 >{opt.label}</button>
               ))}
             </div>
@@ -207,27 +199,31 @@ export default function Quiz90s() {
         {step === "quiz" && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <div style={{ marginBottom: "28px" }}>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", display: "flex", justifyContent: "space-between", fontSize: "11px", color: C.muted, marginBottom: "8px", letterSpacing: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: C.muted, marginBottom: "6px", letterSpacing: "2px" }}>
                 <span>Q{currentQ + 1} / {QUESTIONS.length}</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <div style={{ height: "2px", background: "#222", borderRadius: "2px" }}>
-                <div style={{ height: "100%", borderRadius: "2px", transition: "width 0.4s", width: `${progress}%`, background: `linear-gradient(90deg,${C.a1},${C.a2})` }} />
+              <div style={{ height: "3px", background: C.border, borderRadius: "2px" }}>
+                <div style={{ height: "100%", borderRadius: "2px", transition: "width 0.4s", width: `${progress}%`, background: `linear-gradient(90deg,${C.a1},${C.a3})` }} />
               </div>
             </div>
-            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "20px", lineHeight: 1.45, fontWeight: "700", marginBottom: "24px" }}>{QUESTIONS[currentQ].text}</p>
+            <p style={{ fontSize: "17px", lineHeight: 1.5, fontWeight: "600", marginBottom: "24px" }}>{QUESTIONS[currentQ].text}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               {QUESTIONS[currentQ].options.map((opt, i) => (
-                <button key={i} onClick={() => handleAnswer(opt)} className="opt-btn"
-                  style={{ fontFamily: "'DM Sans', sans-serif", padding: "15px 18px", textAlign: "left", fontSize: "14px", lineHeight: 1.55, cursor: "pointer", background: "#111", border: "1px solid #222", borderRadius: "10px", color: C.text, transition: "all 0.15s", display: "flex", gap: "12px", alignItems: "flex-start" }}
+                <button key={i} onClick={() => handleAnswer(opt)}
+                  style={{ padding: "15px 18px", textAlign: "left", fontSize: "14px", lineHeight: 1.5, cursor: "pointer", background: C.card, border: `1px solid ${C.border}`, borderRadius: "10px", color: C.text, transition: "all 0.15s", display: "flex", gap: "12px", alignItems: "flex-start" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.a1; e.currentTarget.style.background = "#1a1a2a"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = C.card; }}
                 >
                   <span style={{ color: C.a1, fontWeight: "700", flexShrink: 0 }}>{String.fromCharCode(65 + i)}.</span>
                   <span>{opt}</span>
                 </button>
               ))}
               {!showCustom ? (
-                <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50); }} className="custom-btn"
-                  style={{ fontFamily: "'DM Sans', sans-serif", padding: "15px 18px", textAlign: "left", fontSize: "14px", cursor: "pointer", background: "transparent", border: "1px dashed #333", borderRadius: "10px", color: C.muted, display: "flex", gap: "12px", transition: "all 0.15s" }}
+                <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50); }}
+                  style={{ padding: "15px 18px", textAlign: "left", fontSize: "14px", cursor: "pointer", background: "transparent", border: `1px dashed ${C.border}`, borderRadius: "10px", color: C.muted, display: "flex", gap: "12px", transition: "all 0.15s" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.a3; e.currentTarget.style.color = C.text; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.muted; }}
                 >
                   <span style={{ fontWeight: "700" }}>D.</span>
                   <span>Autre chose — {QUESTIONS[currentQ].placeholder}</span>
@@ -238,10 +234,10 @@ export default function Quiz90s() {
                     onChange={e => setCustomInput(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && customInput.trim() && handleAnswer(customInput.trim())}
                     placeholder={QUESTIONS[currentQ].placeholder}
-                    style={{ fontFamily: "'DM Sans', sans-serif", flex: 1, padding: "14px 16px", fontSize: "14px", background: "#111", border: `1px solid ${C.a1}`, borderRadius: "10px", color: C.text, outline: "none" }}
+                    style={{ flex: 1, padding: "14px 16px", fontSize: "14px", background: C.card, border: `1px solid ${C.a3}`, borderRadius: "10px", color: C.text, outline: "none" }}
                   />
                   <button onClick={() => customInput.trim() && handleAnswer(customInput.trim())}
-                    style={{ padding: "14px 20px", fontSize: "16px", cursor: "pointer", background: C.a1, border: "none", borderRadius: "10px", color: "white", fontWeight: "700" }}>→</button>
+                    style={{ padding: "14px 20px", fontSize: "16px", cursor: "pointer", background: C.a3, border: "none", borderRadius: "10px", color: "white", fontWeight: "700" }}>→</button>
                 </div>
               )}
             </div>
@@ -251,11 +247,11 @@ export default function Quiz90s() {
         {/* LOADING */}
         {step === "loading" && (
           <div style={{ textAlign: "center", animation: "fadeIn 0.4s ease" }}>
-            <div style={{ fontSize: "40px", marginBottom: "20px", display: "inline-block", animation: "spin 2s linear infinite" }}>✦</div>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", marginBottom: "10px" }}>Analyse en cours...</h2>
-            <p style={{ fontFamily: "'DM Sans', sans-serif", color: C.muted, fontSize: "14px", lineHeight: 1.7, fontWeight: 300 }}>L'IA rewind les 90s,<br />croise tes réponses avec 90 personnages,<br />et te génère un profil unique.</p>
+            <div style={{ fontSize: "44px", marginBottom: "20px", display: "inline-block", animation: "spin 2s linear infinite" }}>◈</div>
+            <h2 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "10px" }}>Analyse en cours...</h2>
+            <p style={{ color: C.muted, fontSize: "14px", lineHeight: 1.6 }}>L'IA rewind les 90s,<br />croise tes réponses avec 90 personnages,<br />et te génère un profil unique.</p>
             <div style={{ marginTop: "28px", display: "flex", justifyContent: "center", gap: "8px" }}>
-              {[0,1,2].map(i => <div key={i} style={{ width: "7px", height: "7px", borderRadius: "50%", background: C.a1, animation: `bounce 1s ease-in-out ${i*0.2}s infinite` }} />)}
+              {[0,1,2].map(i => <div key={i} style={{ width: "8px", height: "8px", borderRadius: "50%", background: C.a1, animation: `bounce 1s ease-in-out ${i*0.2}s infinite` }} />)}
             </div>
           </div>
         )}
@@ -263,12 +259,12 @@ export default function Quiz90s() {
         {/* ERROR */}
         {step === "error" && (
           <div style={{ textAlign: "center", animation: "fadeIn 0.4s ease" }}>
-            <div style={{ fontSize: "36px", marginBottom: "14px" }}>💥</div>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: "700", marginBottom: "12px" }}>Crash 90s style</h2>
-            <div style={{ background: "#1a0a0a", border: "1px solid #3a1a1a", borderRadius: "10px", padding: "16px", marginBottom: "20px", textAlign: "left" }}>
-              <p style={{ fontFamily: "monospace", fontSize: "12px", color: "#ff9999", margin: 0, wordBreak: "break-all", whiteSpace: "pre-wrap" }}>{error}</p>
+            <div style={{ fontSize: "40px", marginBottom: "16px" }}>💥</div>
+            <h2 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "12px" }}>Crash 90s style</h2>
+            <div style={{ background: "#1a0a0a", border: `1px solid ${C.a1}55`, borderRadius: "10px", padding: "16px", marginBottom: "20px", textAlign: "left" }}>
+              <p style={{ fontSize: "12px", color: "#ff9999", fontFamily: "monospace", margin: 0, wordBreak: "break-all", whiteSpace: "pre-wrap" }}>{error}</p>
             </div>
-            <button onClick={restart} style={{ width: "100%", padding: "16px", fontFamily: "'DM Sans', sans-serif", fontSize: "14px", fontWeight: "500", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", border: "none", borderRadius: "10px", background: `linear-gradient(135deg,${C.a1},${C.a2})`, color: "white" }}>
+            <button onClick={restart} style={{ width: "100%", padding: "16px", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", border: "none", borderRadius: "10px", background: `linear-gradient(135deg,${C.a1},${C.a2})`, color: "white" }}>
               Recommencer
             </button>
           </div>
@@ -277,7 +273,6 @@ export default function Quiz90s() {
         {/* RESULT */}
         {step === "result" && result && (
           <div style={{ animation: "fadeIn 0.5s ease" }}>
-
             <div ref={cardRef} style={{
               background: "linear-gradient(135deg, #0a0a1e, #12123a, #0a1628)",
               border: "1px solid rgba(255,107,157,0.2)",
@@ -287,7 +282,7 @@ export default function Quiz90s() {
               <div style={{ position: "absolute", top: "-80px", right: "-80px", width: "280px", height: "280px", background: "radial-gradient(circle, rgba(255,107,157,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
               <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: "220px", height: "220px", background: "radial-gradient(circle, rgba(43,134,197,0.15) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "10px", fontWeight: "500", letterSpacing: "0.2em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ fontSize: "10px", fontWeight: "500", letterSpacing: "0.2em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span style={{ display: "block", height: "1px", width: "22px", background: "rgba(255,107,157,0.4)" }} />
                 Which 90s character are you?
                 <span style={{ display: "block", height: "1px", width: "22px", background: "rgba(255,107,157,0.4)" }} />
@@ -303,29 +298,28 @@ export default function Quiz90s() {
                 ) : result.personnage_principal}
               </div>
 
-              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "13px", color: "#FFA45B", letterSpacing: "0.05em", marginBottom: "24px" }}>
+              <div style={{ fontSize: "13px", color: "#FFA45B", letterSpacing: "0.05em", marginBottom: "24px" }}>
                 {result.punchline}
               </div>
 
               <div style={{ height: "1px", background: "linear-gradient(90deg, rgba(255,107,157,0.35), rgba(255,164,91,0.35), transparent)", marginBottom: "22px" }} />
 
-              <div style={{ fontFamily: "'Courier New', monospace", fontSize: "14px", fontWeight: "300", color: "#C0C0C0", lineHeight: 1.85, marginBottom: "26px" }}>
+              <div style={{ fontSize: "14px", fontWeight: "300", color: "#C0C0C0", lineHeight: 1.85, marginBottom: "26px" }}>
                 {result.descriptif}
               </div>
 
               <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderLeft: "3px solid #FF6B9D", borderRadius: "0 8px 8px 0", padding: "16px 20px", display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "22px" }}>
                 <span style={{ fontSize: "18px", flexShrink: 0, marginTop: "2px" }}>⚡</span>
                 <div>
-                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: "10px", fontWeight: "600", letterSpacing: "0.18em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "5px" }}>Super pouvoir</div>
-                  <div style={{ fontFamily: "'Courier New', monospace", fontSize: "13px", color: "#E0E0E0", lineHeight: 1.55 }}>{result.superpower}</div>
+                  <div style={{ fontSize: "10px", fontWeight: "600", letterSpacing: "0.18em", color: "#FF6B9D", textTransform: "uppercase", marginBottom: "5px" }}>Super pouvoir</div>
+                  <div style={{ fontSize: "13px", color: "#E0E0E0", lineHeight: 1.55 }}>{result.superpower}</div>
                 </div>
               </div>
 
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 {extractTags(result).map((tag, i) => (
                   <span key={i} style={{
-                    fontFamily: "'Courier New', monospace", fontSize: "11px",
-                    padding: "5px 13px", borderRadius: "20px", border: "1px solid",
+                    fontSize: "11px", padding: "5px 13px", borderRadius: "20px", border: "1px solid",
                     color: tag.type === "pink" ? "#FF6B9D" : tag.type === "orange" ? "#FFA45B" : "#555",
                     borderColor: tag.type === "pink" ? "rgba(255,107,157,0.35)" : tag.type === "orange" ? "rgba(255,164,91,0.35)" : "rgba(255,255,255,0.1)",
                     background: tag.type === "pink" ? "rgba(255,107,157,0.08)" : tag.type === "orange" ? "rgba(255,164,91,0.08)" : "transparent",
@@ -336,26 +330,26 @@ export default function Quiz90s() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <button onClick={copyImage} style={{
-                width: "100%", padding: "15px", fontFamily: "'Courier New', monospace",
-                fontSize: "13px", fontWeight: "600", letterSpacing: "2px", textTransform: "uppercase",
+                width: "100%", padding: "15px", fontSize: "13px", fontWeight: "700",
+                letterSpacing: "2px", textTransform: "uppercase",
                 cursor: copyState === "copying" ? "wait" : "pointer", border: "none",
                 borderRadius: "10px", color: "white", transition: "background 0.3s",
                 background: copyState === "done" ? "linear-gradient(135deg,#22c55e,#16a34a)" : "linear-gradient(135deg, #FF6B9D, #FFA45B)"
               }}>
-                {copyState === "idle" && "Copier l'image →"}
-                {copyState === "copying" && "Génération..."}
-                {copyState === "done" && "✓ Image copiée !"}
+                {copyState === "idle" && "Copier l'image \u2192"}
+                {copyState === "copying" && "G\u00e9n\u00e9ration..."}
+                {copyState === "done" && "\u2713 Image copi\u00e9e !"}
               </button>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                <button onClick={shareLinkedIn} style={{ padding: "13px", fontFamily: "'Courier New', monospace", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
+                <button onClick={shareLinkedIn} style={{ padding: "13px", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = "#0A66C2"; e.currentTarget.style.background = "rgba(10,102,194,0.12)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                   LinkedIn
                 </button>
-                <button onClick={shareWhatsApp} style={{ padding: "13px", fontFamily: "'Courier New', monospace", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
+                <button onClick={shareWhatsApp} style={{ padding: "13px", fontSize: "12px", cursor: "pointer", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "#f0f0f0", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", transition: "all 0.15s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = "#25D366"; e.currentTarget.style.background = "rgba(37,211,102,0.08)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                 >
@@ -364,7 +358,7 @@ export default function Quiz90s() {
                 </button>
               </div>
 
-              <button onClick={restart} style={{ width: "100%", padding: "12px", fontFamily: "'Courier New', monospace", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", background: "transparent", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#444", transition: "all 0.15s" }}
+              <button onClick={restart} style={{ width: "100%", padding: "12px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", background: "transparent", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#444", transition: "all 0.15s" }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#aaa"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "#444"; }}
               >
