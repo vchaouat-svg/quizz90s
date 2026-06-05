@@ -34,7 +34,7 @@ export async function POST(request) {
     const userMessage = `Genre: ${genre}\n\n${answersText}`;
 
     const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-5",
       max_tokens: 800,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
