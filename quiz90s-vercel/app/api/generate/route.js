@@ -80,29 +80,44 @@ function buildSystemPrompt(genre) {
 
 ${casting}
 
-AXES D'INFÉRENCE — lis les réponses et détecte quel axe domine :
-- ÉNERGIE SOLAIRE : magnétisme naturel, occupe l'espace sans effort, séduction assumée, rapport au désir décomplexé → Samantha, Xena, Lara Croft, Piper, Joey, Vincent Vega
-- CYNISME FROID : le monde déçoit en permanence, humour comme armure, observateur lucide, peu de mots mais précis → Daria, Jane Lane, Dana Scully, Lisa Simpson, Chandler, Fox Mulder
-- CHAOS JOYEUX : la réalité est optionnelle, naïveté assumée, improvisation totale, les choses s'arrangent mystérieusement → Phoebe (Friends), Sabrina, Sailor Moon, Parker Lewis, Michelangelo
-- CONTRÔLE NARRATIF : besoin que sa vie soit une histoire, se raconte autant qu'elle vit, drama conscient → Carrie, Ally McBeal, Ross, Jack Dawson
+AXES D'INFÉRENCE — détecte quel axe domine dans les réponses :
+- ÉNERGIE SOLAIRE : magnétisme naturel, occupe l'espace sans effort, séduction assumée, rapport au désir décomplexé → Samantha, Xena, Lara Croft, Piper, Joey, Vincent Vega, Mia Wallace
+- CYNISME FROID : le monde déçoit en permanence, humour comme armure, observateur lucide, silence qui fait le travail → Daria, Jane Lane, Dana Scully, Lisa Simpson, Chandler, Fox Mulder
+- CHAOS JOYEUX : la réalité est optionnelle, naïveté assumée, improvisation totale, les choses s'arrangent mystérieusement → Phoebe (Friends), Sabrina, Sailor Moon, Parker Lewis, Michelangelo, Homer
+- CONTRÔLE NARRATIF : besoin que sa vie soit une histoire racontable, se raconte autant qu'elle vit, drama conscient → Carrie, Ally McBeal, Ross, Jack Dawson
 - GESTIONNAIRE COMPULSIF : efficacité, structure, solution avant émotion, la liste existe déjà → Miranda, Monica, Blair Sandburg, Carlton
 - LOYAL ANCHOR : là quand ça compte, discret sur soi, fort pour les autres → Charlotte, Rachel, Jim Ellison, Forrest Gump
+- ÉLECTRON LIBRE : joue selon ses propres règles, disparaît et réapparaît, insaisissable → Jarod, Tyler Durden, Neo, Buffy, Cher Horowitz
+
+GRILLE DE LECTURE DES RÉPONSES :
+Q1 A=gestionnaire, B=électron libre/cynisme, C=chaos joyeux
+Q2 A=énergie solaire+loyauté, B=électron libre, C=contrôle narratif/cynisme
+Q3 A=énergie solaire, B=contrôle narratif+chaos, C=électron libre/cynisme
+Q4 A=loyal anchor/cynisme, B=contrôle narratif, C=gestionnaire
+Q5 A=énergie solaire, B=contrôle narratif, C=cynisme froid
+Q6 A=énergie solaire, B=électron libre, C=cynisme froid/loyal anchor
+Q7 A=contrôle narratif, B=énergie solaire, C=chaos joyeux
+Q8 A=électron libre/cynisme, B=contrôle narratif/loyal anchor, C=chaos joyeux
+Q9 A=gestionnaire/cynisme, B=chaos joyeux, C=contrôle narratif
+Q10 A=énergie solaire, B=gestionnaire, C=cynisme froid
+Q11 A=contrôle narratif/cynisme, B=gestionnaire, C=électron libre
+Q12 A=chaos joyeux/électron libre, B=loyal anchor, C=gestionnaire/cynisme
 
 RÈGLES:
-- Analyse le pattern global ET les contradictions dans les réponses
-- Génère un profil pur (1 perso) OU composite "X x Y" avec personnalités en VRAIE tension opposée
-- Composite interdit si même axe (deux gestionnaires, deux rebelles = non)
-- TOUJOURS utiliser des persos du même genre que celui déclaré. Jamais mixer homme et femme dans un composite.
+- Analyse le pattern global ET les contradictions — les tensions entre axes font les meilleurs composites
+- Profil pur (1 perso) OU composite "X x Y" avec personnalités en VRAIE tension opposée
+- Composite interdit si même axe (deux gestionnaires, deux cyniques = non)
+- TOUJOURS même genre que déclaré. Jamais mixer homme et femme dans un composite.
 - L'ordre du casting est aléatoire — choisis selon le profil détecté, pas selon la position dans la liste
-- Dans personnage_principal : "Prénom dans Série/Film" ex: "Miranda dans Sex and the City". Pour composite : "Miranda dans Sex and the City x Phoebe dans Friends"
-- INTERDIT de paraphraser ou résumer les réponses. Tu dois INFÉRER la personnalité à partir des patterns. Le lecteur ne doit jamais deviner ce qui a été coché. Tu parles de qui ils SONT, pas de ce qu'ils ont DIT.
+- Dans personnage_principal : "Prénom dans Série/Film". Pour composite : "Prénom dans Série x Prénom dans Série"
+- INTERDIT de paraphraser ou résumer les réponses. INFÉRER la personnalité à partir des patterns. Le lecteur ne doit jamais deviner ce qui a été coché.
 - Ton mordant, second degré, parenthèses meta, franglais. Jamais générique.
 
 FORMAT JSON STRICT - rien d'autre:
 {
   "personnage_principal": "Prénom dans Série x Prénom dans Série OU Prénom dans Série",
   "punchline": "Une phrase ultra courte et percutante — max 8 mots. Drôle, pas corporate.",
-  "descriptif": "2-3 phrases style horoscope Grazia mordant. Parle de la PERSONNALITÉ, pas des réponses. Comme si tu avais observé cette personne pendant des années. Drôle, précis, un peu mortifiant d'amour. Une citation du personnage peut apparaître naturellement si elle colle.",
+  "descriptif": "2-3 phrases style horoscope Grazia mordant. Parle de la PERSONNALITÉ, pas des réponses. Comme si tu avais observé cette personne pendant des années. Drôle, précis, un peu mortifiant d'amour.",
   "superpower": "Ton super pouvoir en une ligne. Drôle et vrai."
 }`;
 }
@@ -119,7 +134,9 @@ export async function POST(request) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
-    const answersText = answers.map((a) => `Q${a.q}: ${a.answer}`).join("\n");
+    const answersText = answers
+      .map((a) => `Q${a.q}: ${a.answer}`)
+      .join("\n");
     const userMessage = `Genre: ${genre}\n\n${answersText}`;
 
     const message = await client.messages.create({
