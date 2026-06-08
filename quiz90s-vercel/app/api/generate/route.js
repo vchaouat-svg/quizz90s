@@ -1,21 +1,101 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const SYSTEM_PROMPT = `Tu es le moteur d'un quiz de personnalité 90s. Réponds UNIQUEMENT avec du JSON valide, sans backticks, sans markdown, sans texte autour.
+const CASTING_FEMMES = [
+  "Carrie (Sex and the City)",
+  "Miranda (Sex and the City)",
+  "Charlotte (Sex and the City)",
+  "Samantha (Sex and the City)",
+  "Rachel (Friends)",
+  "Monica (Friends)",
+  "Phoebe (Friends)",
+  "Buffy (Buffy contre les vampires)",
+  "Dana Scully (X-Files)",
+  "Cher Horowitz (Clueless)",
+  "Mia Wallace (Pulp Fiction)",
+  "Ally McBeal (Ally McBeal)",
+  "Daria Morgendorffer (Daria)",
+  "Jane Lane (Daria)",
+  "Quinn Morgendorffer (Daria)",
+  "Lisa Simpson (Les Simpson)",
+  "Sabrina Spellman (L'apprentie sorcière)",
+  "Lara Croft (Tomb Raider)",
+  "Xena (Xena la guerrière)",
+  "Piper (Charmed)",
+  "Prue (Charmed)",
+  "Phoebe (Charmed)",
+  "Paige (Charmed)",
+  "Hélène (Hélène et les garçons)",
+  "Sailor Moon",
+];
 
-CASTING FEMMES (du plus iconique au plus secondaire): Carrie (Sex and the City), Miranda (Sex and the City), Charlotte (Sex and the City), Samantha (Sex and the City), Rachel (Friends), Monica (Friends), Phoebe (Friends), Buffy (Buffy contre les vampires), Dana Scully (X-Files), Cher Horowitz (Clueless), Elle Woods (Legally Blonde), Vivian Ward (Pretty Woman), Mia Wallace (Pulp Fiction), Pamela Anderson (Alerte à Malibu), Beyoncé Destiny's Child era, Beyoncé Lemonade era, Beyoncé Renaissance era, Britney Spears, Madonna 90s, Mariah Carey, Shakira, Christina Aguilera, Alanis Morissette, Lauryn Hill, TLC, Victoria Beckham (Spice Girl), Mel C (Spice Girl), Mel B (Spice Girl), Emma (Spice Girl), Geri (Spice Girl), Ally McBeal, Daria Morgendorffer (Daria), Lisa Simpson, Sabrina Spellman (L'apprentie sorcière), Lara Croft, Mylène Farmer, Cher (Do you belieeeeve?), Shania Twain, Jackie Brown, Piper (Charmed), Prue (Charmed), Phoebe (Charmed), Hélène (Hélène et les garçons), Jane Lane (Daria), Quinn Morgendorffer (Daria), Sailor Moon, Paige (Charmed)
+const CASTING_HOMMES = [
+  "Chandler (Friends)",
+  "Joey (Friends)",
+  "Ross (Friends)",
+  "Fox Mulder (X-Files)",
+  "Jack (Titanic)",
+  "Tyler Durden (Fight Club)",
+  "Neo (Matrix)",
+  "Forrest Gump (Forrest Gump)",
+  "Vincent Vega (Pulp Fiction)",
+  "Will (Le Prince de Bel-Air)",
+  "Carlton (Le Prince de Bel-Air)",
+  "Bart Simpson (Les Simpson)",
+  "Homer Simpson (Les Simpson)",
+  "Austin Powers (Austin Powers)",
+  "Jean-Claude Van Damme (JCVD)",
+  "Zack Morris (Sauvés par le gong)",
+  "Steve Urkel (Famille en fête)",
+  "Michael Knight (K2000)",
+  "KITT (K2000)",
+  "Michelangelo (Tortues Ninja)",
+  "Nicky Larson (City Hunter)",
+  "Parker Lewis (Parker Lewis ne perd jamais)",
+  "Jarod (Le Caméléon)",
+  "Jim Ellison (The Sentinel)",
+  "Blair Sandburg (The Sentinel)",
+];
 
-CASTING HOMMES (du plus iconique au plus secondaire): Chandler (Friends), Joey (Friends), Ross (Friends), Fox Mulder (X-Files), Jack (Titanic), Tyler Durden (Fight Club), Neo (Matrix), Forrest Gump, Vincent Vega (Pulp Fiction), Will (Le Prince de Bel-Air), Bart Simpson, Homer Simpson, Eminem, Tupac, Biggie, Ricky Martin, Kurt Cobain, Michael Jordan, Prince, Robbie Williams, Seth Cohen (The OC), Austin Powers, Carlton (Le Prince de Bel-Air), Jean-Claude Van Damme, Will Smith rap era, Nick Carter (Backstreet Boys), Edward aux mains d'argent, Zack Morris (Sauvés par le gong), Steve Urkel (Famille en or), Michael Knight (K2000), Filip (2Be3), Hannibal (L'Agence tous risques), KITT (K2000)
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-NON-BINAIRE / FLUIDE : tu puises librement dans les deux listes.
+function buildSystemPrompt(genre) {
+  const femmes = shuffle(CASTING_FEMMES).join(", ");
+  const hommes = shuffle(CASTING_HOMMES).join(", ");
+
+  const casting =
+    genre === "homme"
+      ? `CASTING: ${hommes}`
+      : genre === "femme"
+      ? `CASTING: ${femmes}`
+      : `CASTING FEMMES: ${femmes}\nCASTING HOMMES: ${hommes}`;
+
+  return `Tu es le moteur d'un quiz de personnalité 90s. Réponds UNIQUEMENT avec du JSON valide, sans backticks, sans markdown, sans texte autour.
+
+${casting}
+
+AXES D'INFÉRENCE — lis les réponses et détecte quel axe domine :
+- ÉNERGIE SOLAIRE : magnétisme naturel, occupe l'espace sans effort, séduction assumée, rapport au désir décomplexé → Samantha, Xena, Lara Croft, Piper, Joey, Vincent Vega
+- CYNISME FROID : le monde déçoit en permanence, humour comme armure, observateur lucide, peu de mots mais précis → Daria, Jane Lane, Dana Scully, Lisa Simpson, Chandler, Fox Mulder
+- CHAOS JOYEUX : la réalité est optionnelle, naïveté assumée, improvisation totale, les choses s'arrangent mystérieusement → Phoebe (Friends), Sabrina, Sailor Moon, Parker Lewis, Michelangelo
+- CONTRÔLE NARRATIF : besoin que sa vie soit une histoire, se raconte autant qu'elle vit, drama conscient → Carrie, Ally McBeal, Ross, Jack Dawson
+- GESTIONNAIRE COMPULSIF : efficacité, structure, solution avant émotion, la liste existe déjà → Miranda, Monica, Blair Sandburg, Carlton
+- LOYAL ANCHOR : là quand ça compte, discret sur soi, fort pour les autres → Charlotte, Rachel, Jim Ellison, Forrest Gump
 
 RÈGLES:
 - Analyse le pattern global ET les contradictions dans les réponses
 - Génère un profil pur (1 perso) OU composite "X x Y" avec personnalités en VRAIE tension opposée
-- Composite interdit si même archétype (deux qui gèrent, deux rebelles, deux romantiques = non)
+- Composite interdit si même axe (deux gestionnaires, deux rebelles = non)
 - TOUJOURS utiliser des persos du même genre que celui déclaré. Jamais mixer homme et femme dans un composite.
-- Privilégie TOUJOURS les persos en haut de liste. Les persos secondaires seulement si le profil l'exige vraiment.
-- Dans personnage_principal : "Prénom dans Série/Film" ex: "Miranda dans Sex and the City" ou "Chandler dans Friends". Pour composite : "Miranda dans Sex and the City x Phoebe dans Friends"
-- INTERDIT de paraphraser ou résumer les réponses. Tu dois INFÉRER la personnalité à partir des patterns, pas décrire ce que la personne a répondu. Le lecteur ne doit jamais deviner ce qui a été coché. Tu parles de qui ils SONT, pas de ce qu'ils ont DIT.
+- L'ordre du casting est aléatoire — choisis selon le profil détecté, pas selon la position dans la liste
+- Dans personnage_principal : "Prénom dans Série/Film" ex: "Miranda dans Sex and the City". Pour composite : "Miranda dans Sex and the City x Phoebe dans Friends"
+- INTERDIT de paraphraser ou résumer les réponses. Tu dois INFÉRER la personnalité à partir des patterns. Le lecteur ne doit jamais deviner ce qui a été coché. Tu parles de qui ils SONT, pas de ce qu'ils ont DIT.
 - Ton mordant, second degré, parenthèses meta, franglais. Jamais générique.
 
 FORMAT JSON STRICT - rien d'autre:
@@ -25,6 +105,7 @@ FORMAT JSON STRICT - rien d'autre:
   "descriptif": "2-3 phrases style horoscope Grazia mordant. Parle de la PERSONNALITÉ, pas des réponses. Comme si tu avais observé cette personne pendant des années. Drôle, précis, un peu mortifiant d'amour. Une citation du personnage peut apparaître naturellement si elle colle.",
   "superpower": "Ton super pouvoir en une ligne. Drôle et vrai."
 }`;
+}
 
 export async function POST(request) {
   try {
@@ -38,17 +119,17 @@ export async function POST(request) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
-    const answersText = answers.map(a => `Q${a.q}: ${a.answer}`).join("\n");
+    const answersText = answers.map((a) => `Q${a.q}: ${a.answer}`).join("\n");
     const userMessage = `Genre: ${genre}\n\n${answersText}`;
 
     const message = await client.messages.create({
       model: "claude-sonnet-4-5",
       max_tokens: 800,
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(genre),
       messages: [{ role: "user", content: userMessage }],
     });
 
-    const rawText = message.content.map(b => b.text || "").join("");
+    const rawText = message.content.map((b) => b.text || "").join("");
 
     let parsed;
     try {
