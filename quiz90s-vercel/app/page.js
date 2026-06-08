@@ -78,7 +78,7 @@ const QUESTIONS = [
     options: [
       "Passe en 20 minutes. L'autocommiseration c'est vraiment pas ton truc et les cheveux ca repousse.",
       "T'appelles ta mere, ta BFF, ton meilleur collegue, ton chat. Verbaliser ca aide. Et franchement c'est une bonne histoire au final.",
-      "Tu disparais du radar. Tu reviens quand t'as digere. (Delai variable.)",
+      "Tu disparais du radar. Tu reviens quand t'as digere. (Délai variable. Zappoi ou povod Zappoi?)",
     ],
     placeholder: "Vraiment ?",
   },
