@@ -27,7 +27,7 @@ const QUESTIONS = [
     text: "T'arrives a une soiree, t'avais clairement pas le bon dress code : ambiance Loana debarque dans le loft mais c'est une version speciale Le masque et la plume produite par France Inter.",
     options: [
       "Tu assumes totalement. C'est eux le probleme, tous bloques dans les annees 50s.",
-      "Tu fais croire a tout le monde que Cyril t'a dit que c'etait deguise — ca t'a coute de le rincer toute la soiree pour te backer.",
+      "Tu fais croire a tout le monde que Cyril t'a dit que c'etait deguise (ca t'a coute de le rincer toute la soiree pour te backer)",
       "Tu reperes la sortie en 3 minutes. T'es pas obligee de rester pour confirmer.",
     ],
     placeholder: "Sois creatif.ve !",
