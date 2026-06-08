@@ -141,6 +141,44 @@ function buildSystemPrompt(genre) {
   return promptParts;
 }
 
+async function saveResult(result) {
+  try {
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
+    if (!url || !token) return;
+
+    const now = Date.now();
+    const perso = result.personnage_principal || "inconnu";
+
+    // Increment total count
+    await fetch(url + "/incr/quiz:total", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    // Increment per-character count
+    const key = "quiz:perso:" + perso.replace(/[^a-zA-Z0-9]/g, "_");
+    await fetch(url + "/incr/" + key, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+    });
+
+    // Add to recent results list (keep last 100)
+    const entry = JSON.stringify({ perso, punchline: result.punchline, ts: now });
+    await fetch(url + "/lpush/quiz:recent/" + encodeURIComponent(entry), {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+    });
+    await fetch(url + "/ltrim/quiz:recent/0/99", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+    });
+  } catch (e) {
+    // Silencieux - on ne bloque pas le quiz si le tracking plante
+    console.error("Tracking error:", e.message);
+  }
+}
+
 export async function POST(request) {
   try {
     const { genre, answers } = await request.json();
@@ -177,6 +215,9 @@ export async function POST(request) {
     }
 
     if (!parsed?.personnage_principal) throw new Error("JSON incomplet");
+
+    // Save async - ne bloque pas la reponse
+    saveResult(parsed);
 
     return Response.json(parsed);
   } catch (e) {
