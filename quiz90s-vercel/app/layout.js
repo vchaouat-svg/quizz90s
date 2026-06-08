@@ -1,16 +1,18 @@
+import { Analytics } from "@vercel/analytics/next";
+ 
 export const metadata = {
   title: "Which 90s Character Are You?",
-  description: "Le quiz de personnalité 90s propulsé par IA. Pas de cases préfabriquées — un profil unique généré à partir de tes réponses.",
-  openGraph: {
-    title: "Which 90s Character Are You?",
-    description: "Le quiz qui te dit enfin la vérité. Powered by IA.",
-  },
+  description: "Pas un quiz Cosmo. Un profil IA qui te ressemble vraiment.",
 };
-
+ 
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">
-      <body style={{ margin: 0, padding: 0 }}>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
+ 
